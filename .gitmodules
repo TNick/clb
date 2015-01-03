@@ -1,0 +1,6 @@
+[submodule "lib_clb/support/usermsg"]
+	path = lib_clb/support/usermsg
+	url = git@github.com:pile-contributors/usermsg.git
+[submodule "lib_clb/support/refcnt"]
+	path = lib_clb/support/refcnt
+	url = git@github.com:pile-contributors/refcnt.git
