@@ -1,0 +1,157 @@
+/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
+/*!
+  \file         config.h
+  \date         December 2014
+  \author       Nicu Tofan
+
+*/
+/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
+#ifndef CLB_config_h_INCLUDE
+#define CLB_config_h_INCLUDE
+
+//
+//
+//
+//
+/*  INCLUDES    ------------------------------------------------------------ */
+
+#include    <QApplication>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <clb/source_stamp.h>
+
+/*  INCLUDES    ============================================================ */
+//
+//
+//
+//
+/*  DEFINITIONS    --------------------------------------------------------- */
+
+//! the name of this project
+#define @PROJECT_NAME_U@_PROJECT_NAME   "@PROJECT_NAME@"
+
+//! major version (ABI not preserved between these)
+#define @PROJECT_NAME_U@_MAJOR_VERSION      @CLB_MAJOR_VERSION@
+
+//! minor version; ABI is preserved
+#define @PROJECT_NAME_U@_MINOR_VERSION      @CLB_MINOR_VERSION@
+
+//! bug fixes
+#define @PROJECT_NAME_U@_PATCH_VERSION      @CLB_PATCH_VERSION@
+
+//! bug fixes
+#define CLB_SETTINGS_VERSION            @CLB_SETTINGS_VERSION@
+
+
+//! the version ans a 32-bit integer
+#define @PROJECT_NAME_U@_VERSION            (\
+    @PROJECT_NAME_U@_MAJOR_VERSION * 0x100000 + \
+    @PROJECT_NAME_U@_MINOR_VERSION * 0x1000 + \
+    @PROJECT_NAME_U@_PATCH_VERSION * 0x1)
+
+//! version as a string
+#define @PROJECT_NAME_U@_VERSION_S          "@CLB_VERSION@"
+
+//! when it was build (UTC)
+#define @PROJECT_NAME_U@_BUILD_TIME         "@CLB_BUILD_TIME@"
+
+
+//! is this a monolithic build or not
+#cmakedefine CLB_MONOLITHIC
+
+#cmakedefine CLB_FORCE_DEBUG
+
+//! debug or not
+#ifndef CLB_DEBUG
+#ifdef CLB_FORCE_DEBUG
+#define CLB_DEBUG 1
+#else
+#cmakedefine CLB_DEBUG
+#endif
+#endif
+
+//! windows or not
+#cmakedefine TARGET_SYSTEM_WIN32
+
+//! microsoft compiler or not
+#cmakedefine TARGET_COMPILER_MSVC
+
+#ifdef TARGET_COMPILER_MSVC
+#   define int64_t __int64
+#   define uint64_t unsigned __int64
+#endif
+
+//! 32 bit architecture
+#cmakedefine TARGET_32BITS
+
+//! 64 bit architecture
+#cmakedefine TARGET_64BITS
+
+//! system name
+#define TARGET_SYSTEM "@CMAKE_SYSTEM_NAME@"
+
+//! compiler name
+#define TARGET_COMPILER "@CMAKE_CXX_COMPILER_ID@"
+
+// number of bits
+#ifdef TARGET_32BITS
+#   ifdef TARGET_64BITS
+#       error "Can't be both 32 and 64. Make up your mind"
+#   endif // TARGET_64BITS
+#   define TARGET_BITS     32
+#elif defined (TARGET_64BITS)
+#   define TARGET_BITS     64
+#else
+#   error "Undefined architecture; define either TARGET_32BITS or TARGET_64BITS"
+#endif
+
+
+// Take the export or inport form depending on who's asking;
+// in monolithic builds only a selected set of functions needs to be exported
+#ifdef CLB_MONOLITHIC
+#   if defined(CLB_SHARED)
+#       define CLB_MON_EXPORT        Q_DECL_EXPORT
+#   else
+#       define CLB_MON_EXPORT        Q_DECL_IMPORT
+#   endif
+#   undef CLB_EXPORT
+#   define CLB_EXPORT
+#else
+#   if defined(CLB_SHARED)
+#       define CLB_EXPORT        Q_DECL_EXPORT
+#   else
+#       define CLB_EXPORT        Q_DECL_IMPORT
+#   endif
+#   define CLB_MON_EXPORT   CLB_EXPORT
+#endif
+
+/*  DEFINITIONS    ========================================================= */
+//
+//
+//
+//
+/*  DATA    ---------------------------------------------------------------- */
+
+/*  DATA    ================================================================ */
+//
+//
+//
+//
+/*  FUNCTIONS    ----------------------------------------------------------- */
+
+/*  FUNCTIONS    =========================================================== */
+//
+//
+//
+//
+/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
+#ifdef __cplusplus
+}
+#endif
+#endif /* CLB_config_h_INCLUDE */
