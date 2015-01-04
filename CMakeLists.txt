@@ -32,6 +32,7 @@
 # prepare
 
 cmake_minimum_required(VERSION 3.0.0)
+project("CLB" VERSION "0.0.1" LANGUAGES C CXX)
 
 include(pile_support)
 
@@ -40,8 +41,7 @@ include(pile_support)
 # ----------------------------------------------------------------------------
 # customisation
 
-pileProject("CLB" "0;0;1;1")
-project("CLB" VERSION "${CLB_VERSION}" LANGUAGES C CXX)
+pileProject("1")
 pileProjectCommon()
 
 # ============================================================================

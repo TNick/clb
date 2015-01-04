@@ -1,57 +1,44 @@
 # ----------------------------------------------------------------------------
-# Project library.
+# GUI components.
 # ============================================================================
 
 # ----------------------------------------------------------------------------
 # initialize
-pileTarget( "LapCLB")
+pileTarget( "clbgui")
 
 # ============================================================================
-
-# ----------------------------------------------------------------------------
-# Subcomponents
-add_definitions (-DCLB_SHARED -DUSERMSG_SHARED -DREFCNT_SHARED)
-
-add_subdirectory("support")
-add_subdirectory("logic")
-add_subdirectory("gui")
-
-# ============================================================================
-
 
 # ----------------------------------------------------------------------------
 # our library
-set( LAPCLB_SOURCES
-	lib_clb.cc
-)
-#if (WIN32)
-#    list(APPEND LAPCLB_SOURCES
-#        winres.rc)
-#endif (WIN32)
-
-set( LAPCLB_HEADERS
-	lib_clb.h
-    clb.h
+set( CLBGUI_SOURCES
+    snippetsdlg.cc
+    gui_main.cc
+    editors/codeeditor.cc
 )
 
-set( LAPCLB_LIBS
-    "clbgui"
-    "logic"
+set( CLBGUI_HEADERS
+    snippetsdlg.h
+    gui_main.h
+)
+
+set( CLBGUI_UIS
+    snippetsdlg.ui
+)
+
+set( CLBGUI_LIBS
+	"logic"
     "support"
-)
-
-set ( LAPCLB_RES
-    application.qrc
 )
 
 set( CLBGUI_QT_MODS
     Core
+    Widgets
 )
 
 # ============================================================================
 
 # ----------------------------------------------------------------------------
 # terminate
-pileEndTarget( "LapCLB" "shared" COPY)
+pileEndTarget( "clbgui" "static" COPY)
 
 # ============================================================================

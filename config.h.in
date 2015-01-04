@@ -23,8 +23,6 @@
 extern "C" {
 #endif
 
-#include <clb/source_stamp.h>
-
 /*  INCLUDES    ============================================================ */
 //
 //

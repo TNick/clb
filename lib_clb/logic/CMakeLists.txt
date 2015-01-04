@@ -11,19 +11,30 @@ pileTarget( "logic")
 # ----------------------------------------------------------------------------
 # our library
 set( LOGIC_SOURCES
-    logic_cset.cc
-    logic_chct.cc
+    snipitem.cc
+    snipmodel.cc
 )
 
 set( LOGIC_HEADERS
-    logic_cset.h
-    logic_chct.h
+    snipitem.h
+    snipmodel.h
+)
+
+set( LOGIC_LIBS
+    "support"
+)
+
+set( LOGIC_QT_MODS
+    Core
+    Xml
+    Network
+    Widgets
 )
 
 # ============================================================================
 
 # ----------------------------------------------------------------------------
 # terminate
-#pileEndTarget( "logic" "static")
+pileEndTarget( "logic" "static" COPY)
 
 # ============================================================================
