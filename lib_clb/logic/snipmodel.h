@@ -37,13 +37,33 @@ public:
             const QString & s_name,
             SnipGroup * parent);
 
+
+    SnipSnip *
+    castToItem (
+            SnipGroup * item);
+
+    SnipGroup *
+    castToGroup (
+            SnipSnip * item);
+
+
+    int
+    deletedCount () const {
+        return deleted_items_.count ();
+    }
+
+    void
+    restoreDeleted ();
+
     SnipGroup * root_;
     QTreeWidget * tv_;
+    QList<SnipItem *> deleted_items_;
+
     SnipItem *currentItem();
     SnipGroup *currentGroup();
     bool removeItem(SnipItem *msel);
-    void saveToItem(SnipItem *item, const QString &s_name, const QString &s_icon, const QString &s_content);
-    void getFromItem(SnipItem *item, QString &s_name, QString &s_icon, QString &s_content);
+    void saveToItem(SnipItem *item, const QString &s_name, const QString &s_link, const QString &s_icon, const QString &s_content);
+    void getFromItem(SnipItem *item, QString &s_name, QString &s_link, QString &s_icon, QString &s_content);
 private:
     bool loadXMLitem(const QDomElement &el, SnipItem *it);
     bool loadXMLSnip(const QDomElement &el, SnipGroup *parent);

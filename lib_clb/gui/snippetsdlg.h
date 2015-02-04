@@ -2,7 +2,7 @@
 #define SNIPPETSDLG_H
 
 #include <clb/clb.h>
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
 class SnippetsDlg;
@@ -11,7 +11,7 @@ class SnippetsDlg;
 class SnipModel;
 class QTreeWidgetItem;
 
-class CLB_MON_EXPORT SnippetsDlg : public QDialog
+class CLB_MON_EXPORT SnippetsDlg : public QWidget
 {
     Q_OBJECT
 
@@ -19,9 +19,15 @@ public:
     explicit SnippetsDlg(QWidget *parent = 0);
     ~SnippetsDlg();
 
+
+
 public slots:
     bool loadXMLFile(const QString &s_file);
     bool saveXMLFile(const QString &s_file);
+
+    const QString & timerFile () const { return s_timer_file_; }
+    const QString & lastSavedFile () const { return s_last_saved_file_; }
+
 private slots:
     void on_database_browse_clicked();
 
@@ -47,6 +53,20 @@ private slots:
 
     void on_le_name_returnPressed();
 
+    void on_minimize();
+
+    void timerEvent ();
+
+    void on_help ();
+
+    void on_le_link_returnPressed();
+
+    void on_goToLink_clicked();
+
+    void on_actionShow_deleted_items_triggered();
+
+    void on_actionCast_triggered();
+
 protected:
 
     void
@@ -56,6 +76,12 @@ protected:
 private:
     Ui::SnippetsDlg *ui;
     SnipModel *model_;
+    int save_timer_;
+    QString s_timer_file_;
+    QString s_last_saved_file_;
+
+
+    bool _saveXMLFile(const QString &s_file);
 };
 
 #endif // SNIPPETSDLG_H

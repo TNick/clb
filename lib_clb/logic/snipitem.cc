@@ -55,3 +55,46 @@ void SnipItem::setIcon (const QString & s_value)
         QTreeWidgetItem::setIcon(0, ic);
     }
 }
+
+
+SnipGroup * SnipGroup::group (const QString & s_name) const
+{
+    QTreeWidgetItem * tvi;
+    int i_max = childCount ();
+    for (int i = 0; i < i_max; ++i) {
+        tvi = child (i);
+        SnipItem * it = static_cast<SnipItem *>(tvi);
+        if (it->name () == s_name) {
+            if (it->isGrup ()) return static_cast<SnipGroup *>(it);
+        }
+    }
+    return NULL;
+}
+
+SnipSnip * SnipGroup::snip (const QString & s_name) const
+{
+    QTreeWidgetItem * tvi;
+    int i_max = childCount ();
+    for (int i = 0; i < i_max; ++i) {
+        tvi = child (i);
+        SnipItem * it = static_cast<SnipItem *>(tvi);
+        if (it->name () == s_name) {
+            if (!it->isGrup ()) return static_cast<SnipSnip *>(it);
+        }
+    }
+    return NULL;
+}
+
+SnipItem * SnipGroup::item (const QString & s_name) const
+{
+    QTreeWidgetItem * tvi;
+    int i_max = childCount ();
+    for (int i = 0; i < i_max; ++i) {
+        tvi = child (i);
+        SnipItem * it = static_cast<SnipItem *>(tvi);
+        if (it->name () == s_name) {
+            if (!it->isGrup ()) return it;
+        }
+    }
+    return NULL;
+}

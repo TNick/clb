@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SnippetsDlg</class>
- <widget class="QDialog" name="SnippetsDlg">
+ <widget class="QWidget" name="SnippetsDlg">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,40 @@
   <property name="windowTitle">
    <string>Snippets</string>
   </property>
-  <property name="sizeGripEnabled">
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 213, 185);
+alternate-background-color: rgb(255, 243, 221);
+border-color: rgb(186, 0, 0);
+color: rgb(85, 0, 0);
+selection-background-color: rgb(255, 85, 0);
+selection-color: rgb(250, 250, 250);
+
+    QTreeView::branch:has-siblings:!adjoins-item  {
+        border-image: url(&quot;:/resources/vline.png&quot;) 0;
+    }
+     
+    QTreeView::branch:has-siblings:adjoins-item  {
+        border-image: url(&quot;:/resources/branch-more.png&quot;) 0;
+    }
+     
+    QTreeView::branch:!has-children:!has-siblings:adjoins-item  {
+        border-image: url(&quot;:/resources/branch-end.png&quot;) 0;
+    }
+     
+    QTreeView::branch:has-children:!has-siblings:closed,
+    QTreeView::branch:closed:has-children:has-siblings  {
+            border-image: none;
+            image: url(&quot;:/resources/branch-closed.png&quot;);
+    }
+     
+    QTreeView::branch:open:has-children:!has-siblings,
+    QTreeView::branch:open:has-children:has-siblings   {
+            border-image: none;
+            image: url(&quot;:/resources/branch-open.png&quot;);
+    }
+</string>
+  </property>
+  <property name="sizeGripEnabled" stdset="0">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -43,11 +76,51 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="styleSheet">
+      <string notr="true">selection-color: rgb(255, 85, 0);
+selection-background-color: rgb(255, 255, 127);
+    QTreeView::branch:has-siblings:!adjoins-item  {
+        border-image: url(vline.png) 0;
+    }
+     
+    QTreeView::branch:has-siblings:adjoins-item  {
+        border-image: url(branch-more.png) 0;
+    }
+     
+    QTreeView::branch:!has-children:!has-siblings:adjoins-item  {
+        border-image: url(branch-end.png) 0;
+    }
+     
+    QTreeView::branch:has-children:!has-siblings:closed,
+    QTreeView::branch:closed:has-children:has-siblings  {
+            border-image: none;
+            image: url(branch-closed.png);
+    }
+     
+    QTreeView::branch:open:has-children:!has-siblings,
+    QTreeView::branch:open:has-children:has-siblings   {
+            border-image: none;
+            image: url(branch-open.png);
+    }
+</string>
+     </property>
      <property name="dragEnabled">
       <bool>true</bool>
      </property>
      <property name="dragDropMode">
       <enum>QAbstractItemView::InternalMove</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="indentation">
+      <number>40</number>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="headerHidden">
+      <bool>true</bool>
      </property>
      <column>
       <property name="text">
@@ -58,20 +131,20 @@
    </item>
    <item row="0" column="1" rowspan="2">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Name</string>
+        <string>Icon</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="le_name"/>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Icon</string>
+        <string>Name</string>
        </property>
       </widget>
      </item>
@@ -119,6 +192,19 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="0">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item row="2" column="1" rowspan="2">
       <widget class="CodeEditor" name="tx_content">
        <property name="sizePolicy">
@@ -133,23 +219,51 @@
          <height>500</height>
         </size>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
        <property name="placeholderText">
         <string>Fill in the content of your snippet here</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Link</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="le_link">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="goToLink">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../application.qrc">
+           <normaloff>:/resources/branch-closed.png</normaloff>:/resources/branch-closed.png</iconset>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::RightArrow</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -190,6 +304,19 @@
    <property name="text">
     <string>Reload database</string>
    </property>
+   <property name="toolTip">
+    <string>Reload  database</string>
+   </property>
+  </action>
+  <action name="actionShow_deleted_items">
+   <property name="text">
+    <string>Show deleted items</string>
+   </property>
+  </action>
+  <action name="actionCast">
+   <property name="text">
+    <string>Cast</string>
+   </property>
   </action>
  </widget>
  <customwidgets>
@@ -208,6 +335,8 @@
   <tabstop>b_icon</tabstop>
   <tabstop>tx_content</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>

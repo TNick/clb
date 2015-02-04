@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Actual command line application.
+# Actual GUI application.
 # ============================================================================
 
 # ----------------------------------------------------------------------------
@@ -13,6 +13,10 @@ pileTarget( "CLB")
 set( CLB_SOURCES
 	main.cc
 )
+if (WIN32)
+    list(APPEND CLB_SOURCES
+        winres.rc)
+endif (WIN32)
 
 set( CLB_LIBS
 	"lapclb"

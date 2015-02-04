@@ -24,24 +24,20 @@ add_subdirectory("gui")
 set( LAPCLB_SOURCES
 	lib_clb.cc
 )
-#if (WIN32)
-#    list(APPEND LAPCLB_SOURCES
-#        winres.rc)
-#endif (WIN32)
 
 set( LAPCLB_HEADERS
 	lib_clb.h
     clb.h
 )
 
+set( LAPCLB_RES
+    application.qrc
+)
+
 set( LAPCLB_LIBS
     "clbgui"
     "logic"
     "support"
-)
-
-set ( LAPCLB_RES
-    application.qrc
 )
 
 set( CLBGUI_QT_MODS

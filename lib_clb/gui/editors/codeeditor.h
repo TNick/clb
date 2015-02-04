@@ -81,7 +81,7 @@ class LineNumberArea;
 /*  CLASS    --------------------------------------------------------------- */
 
 /**
-*	@brief	extends the QTextEdit
+*	@brief	extends the QPlainTextEdit
 */
 class CodeEditor	: public QPlainTextEdit			{
 	Q_OBJECT
@@ -142,6 +142,15 @@ public:
     restoreState (
             QSettings & stg);
 
+    bool
+    wrapText ();
+
+public slots:
+
+    void
+    setWrapText (
+            bool b_wrap);
+
 protected:
 
 	void		resizeEvent						( QResizeEvent *event );
@@ -165,7 +174,9 @@ private slots:
 	void		highlightCurrentLine			( void );
 
 	void		updateLineNumberArea			( const QRect &, int );
-
+    void
+    showContextMenu (
+            const QPoint &pt);
 
 
 	/*  FUNCTIONS    ======================================================= */
@@ -184,7 +195,7 @@ private slots:
 /*  CLASS    --------------------------------------------------------------- */
 
 /**
-*	@brief	extends the QTextEdit
+*	@brief	extends the QPlainTextEdit
 */
 class LineNumberArea	: public QWidget			{
 	Q_OBJECT

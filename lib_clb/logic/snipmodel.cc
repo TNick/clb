@@ -36,6 +36,9 @@ SnipModel::~SnipModel ()
         tvi = tv_->takeTopLevelItem (0);
         delete tvi;
     }
+    foreach (SnipItem * itr, deleted_items_) {
+        delete itr;
+    }
 }
 
 
@@ -48,6 +51,7 @@ QDomElement SnipModel::saveXMLItem (
         el_ret = el_parent.ownerDocument ().createElement ("entry");
         el_ret.setAttribute ("name", item->name ());
         el_ret.setAttribute ("icon", item->iconString ());
+        el_ret.setAttribute ("link", item->link ());
 
         el_parent.appendChild (el_ret);
         break;
@@ -63,6 +67,7 @@ bool SnipModel::loadXMLitem (const QDomElement & el, SnipItem * it)
 
         it->setName (el.attribute ("name"));
         it->setIcon (el.attribute ("icon"));
+        it->setLink (el.attribute ("link"));
 
         b_ret = true;
         break;
@@ -119,6 +124,7 @@ bool SnipModel::saveXMLGroup (QDomElement & el_parent, SnipGroup * grp)
         QDomElement el = saveXMLItem (el_parent, grp);
         el.setAttribute ("type", "group");
         el.setAttribute ("expanded", grp->isExpanded () ? "true" : "false");
+        el.setAttribute ("content", grp->content ());
 
         QTreeWidgetItem * tvi;
         int i_max = grp->childCount ();
@@ -159,6 +165,7 @@ bool SnipModel::loadXMLGroup (const QDomElement & el_grp, SnipGroup * parent)
                         .arg (el_grp.text ()));
             break;
         }
+        grp->setContent  (el_grp.attribute ("content"));
 
         bool b_subitems = true;
         QDomNodeList nl = el_grp.childNodes ();
@@ -299,7 +306,7 @@ bool SnipModel::saveXML (QDomDocument &document)
 }
 
 void SnipModel::saveToItem (
-        SnipItem * item, const QString & s_name,
+        SnipItem * item, const QString & s_name, const QString & s_link,
         const QString & s_icon, const QString & s_content )
 {
     if (item == NULL) return;
@@ -307,8 +314,10 @@ void SnipModel::saveToItem (
 
     item->setName (s_name);
     item->setIcon (s_icon);
+    item->setLink (s_link);
     if (item->isGrup ()) {
-        //SnipGroup * grp = static_cast<SnipGroup *>(item);
+        SnipGroup * grp = static_cast<SnipGroup *>(item);
+        grp->setContent (s_content);
     } else {
         SnipSnip * snp = static_cast<SnipSnip *>(item);
         snp->setContent (s_content);
@@ -317,11 +326,12 @@ void SnipModel::saveToItem (
 
 
 void SnipModel::getFromItem (
-        SnipItem * item, QString & s_name,
+        SnipItem * item, QString & s_name, QString & s_link,
         QString & s_icon, QString & s_content )
 {
     s_name.clear ();
     s_icon.clear ();
+    s_link.clear ();
     s_content.clear ();
 
     if (item == NULL) return;
@@ -329,9 +339,11 @@ void SnipModel::getFromItem (
 
     s_name = item->text (0);
     s_icon = item->iconString ();
+    s_link = item->text (2);
 
     if (item->isGrup ()) {
-        //SnipGroup * grp = static_cast<SnipGroup *>(item);
+        SnipGroup * grp = static_cast<SnipGroup *>(item);
+        s_content = grp->content ();
     } else {
         SnipSnip * snp = static_cast<SnipSnip *>(item);
         s_content = snp->content ();
@@ -348,6 +360,7 @@ bool SnipModel::addGroup (
 
         SnipGroup * tvi = new SnipGroup ();
         tvi->setText (0, s_name);
+        tvi->setText (2, "");
         parent->insertChild (parent->childCount (), tvi);
 
         tv_->setCurrentItem (tvi);
@@ -375,6 +388,7 @@ bool SnipModel::addSnip (
 
         SnipSnip * tvi = new SnipSnip ();
         tvi->setText (0, s_name);
+        tvi->setText (2, "");
         parent->insertChild (parent->childCount (), tvi);
 
         tv_->setCurrentItem (tvi);
@@ -384,6 +398,20 @@ bool SnipModel::addSnip (
     }
 
     return b_ret;
+}
+
+void SnipModel::restoreDeleted ()
+{
+    SnipGroup * parent = root_->group ("Trash");
+    if (parent == NULL) {
+        addRootGroup ("Trash");
+        parent = root_->group ("Trash");
+    }
+    foreach (SnipItem * itr, deleted_items_) {
+        parent->insertChild (parent->childCount (), itr);
+    }
+    tv_->setCurrentItem (parent);
+    tv_->scrollToItem (parent);
 }
 
 SnipItem * SnipModel::currentItem ()
@@ -422,12 +450,74 @@ bool SnipModel::removeItem (SnipItem * msel)
 
         int i = msel->parent ()->indexOfChild (msel);
         msel->parent ()->takeChild (i);
-        delete msel;
+        deleted_items_.append (msel);
 
         b_ret = true;
         break;
     }
 
     return b_ret;
+}
+
+SnipSnip * SnipModel::castToItem (SnipGroup *item)
+{
+    bool crt = currentItem () == item;
+    QTreeWidgetItem * parent = item->parent ();
+    if (parent == NULL) return NULL;
+    SnipGroup * parent_si = static_cast<SnipGroup*>(parent);
+    int idx = parent_si->indexOfChild (item);
+    if (idx < 0) return NULL;
+    parent_si->takeChild (idx);
+
+    SnipSnip * tvi = new SnipSnip ();
+    tvi->setText (0, item->text (0));
+    tvi->setText (1, item->text (1));
+    tvi->setText (2, item->text (2));
+    if (item->iconString ().isEmpty ()) {
+        tvi->setDefaultIcon ();
+    } else {
+        tvi->setIcon (item->iconString ());
+    }
+    parent->insertChild (idx, tvi);
+
+    delete item;
+
+    if (crt) {
+        tv_->setCurrentItem (tvi);
+        tv_->scrollToItem (tvi);
+    }
+
+    return tvi;
+}
+
+SnipGroup * SnipModel::castToGroup (SnipSnip *item)
+{
+    bool crt = currentItem () == item;
+    QTreeWidgetItem * parent = item->parent ();
+    if (parent == NULL) return NULL;
+    SnipGroup * parent_si = static_cast<SnipGroup*>(parent);
+    int idx = parent_si->indexOfChild (item);
+    if (idx < 0) return NULL;
+    parent_si->takeChild (idx);
+
+    SnipGroup * tvi = new SnipGroup ();
+    tvi->setText (0, item->text (0));
+    tvi->setText (1, item->text (1));
+    tvi->setText (2, item->text (2));
+    if (item->iconString ().isEmpty ()) {
+        tvi->setDefaultIcon ();
+    } else {
+        tvi->setIcon (item->iconString ());
+    }
+    parent->insertChild (idx, tvi);
+
+    delete item;
+
+    if (crt) {
+        tv_->setCurrentItem (tvi);
+        tv_->scrollToItem (tvi);
+    }
+
+    return tvi;
 }
 

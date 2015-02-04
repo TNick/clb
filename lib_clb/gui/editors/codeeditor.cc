@@ -24,6 +24,7 @@
 #include	<QPainter>
 #include	<QTextBlock>
 #include	<QSettings>
+#include	<QMenu>
 
 #include	"codeeditor.h"
 
@@ -52,7 +53,7 @@
 
 /* ------------------------------------------------------------------------- */
 CodeEditor::CodeEditor	( QWidget * parent ) :
-	QPlainTextEdit( parent )
+    QPlainTextEdit( parent )
 {
 
 	lineNumberArea = new LineNumberArea(this);
@@ -63,12 +64,19 @@ CodeEditor::CodeEditor	( QWidget * parent ) :
 			this, SLOT(updateLineNumberArea(QRect,int)));
 	connect(this, SIGNAL(cursorPositionChanged()),
 			this, SLOT(highlightCurrentLine()));
+    setContextMenuPolicy (Qt::CustomContextMenu);
+    connect(this,SIGNAL(customContextMenuRequested(const QPoint&)),
+            this,SLOT(showContextMenu(const QPoint &)));
 
 	QFont fn = QFont( "Courier" );
 	fn.setFixedPitch( true );
 	fn.setStyleHint( QFont::Courier );
 	setFont( fn );
     lineNumberArea->setFont( fn );
+
+    const int tabStop = 4;
+    QFontMetrics metrics (fn);
+    setTabStopWidth (tabStop * metrics.width(' '));
 
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
@@ -87,6 +95,7 @@ CodeEditor::~CodeEditor	( void )
 bool CodeEditor::saveState (QSettings & stg)
 {
     stg.setValue ("point_size", font().pointSize ());
+    stg.setValue ("word_wrap", wrapText ());
     return true;
 }
 /* ========================================================================= */
@@ -100,6 +109,8 @@ bool CodeEditor::restoreState (QSettings & stg)
     fnt.setPointSize (pt_sz);
     setFont (fnt);
 
+    setWrapText (stg.value ("word_wrap", true).toBool ());
+
     return true;
 }
 /* ========================================================================= */
@@ -108,7 +119,7 @@ bool CodeEditor::restoreState (QSettings & stg)
 int				CodeEditor::lineNumberAreaWidth		( void )
 {
 	int digits = 1;
-	int max = qMax(1, blockCount());
+    int max = qMax(1, document ()->blockCount());
 	while (max >= 10)
 	{
 		max /= 10;
@@ -127,8 +138,7 @@ void			CodeEditor::updateLineNumberAreaWidth	(
 {
 	setViewportMargins(
 				lineNumberAreaWidth(),
-				0, 0, 0
-				);
+                0, 0, 0);
 }
 /* ========================================================================= */
 
@@ -142,14 +152,28 @@ void			CodeEditor::updateLineNumberArea		(
 		lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
 
 	if (rect.contains(viewport()->rect()))
-		updateLineNumberAreaWidth(0);
+        updateLineNumberAreaWidth(0);
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+void CodeEditor::setWrapText(bool b_wrap)
+{
+    setLineWrapMode (b_wrap ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+bool CodeEditor::wrapText ()
+{
+    return lineWrapMode() != QPlainTextEdit::NoWrap;
 }
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
 void			CodeEditor::resizeEvent					( QResizeEvent *e )
 {
-	QPlainTextEdit::resizeEvent(e);
+    QPlainTextEdit::resizeEvent(e);
 
 	QRect cr = contentsRect();
 	lineNumberArea->setGeometry(
@@ -190,7 +214,7 @@ void			CodeEditor::keyPressEvent				( QKeyEvent * e )
 	}
 	else
 	{
-		QPlainTextEdit::keyPressEvent( e );
+        QPlainTextEdit::keyPressEvent( e );
 	}
 }
 /* ========================================================================= */
@@ -210,7 +234,7 @@ void			CodeEditor::wheelEvent	( QWheelEvent * event )
 	}
 	else
 	{
-		QPlainTextEdit::wheelEvent( event );
+        QPlainTextEdit::wheelEvent( event );
 	}
 }
 /* ========================================================================= */
@@ -218,11 +242,11 @@ void			CodeEditor::wheelEvent	( QWheelEvent * event )
 /* ------------------------------------------------------------------------- */
 void			CodeEditor::highlightCurrentLine		( void )
 {
-	QList<QTextEdit::ExtraSelection> extraSelections;
+    QList<QTextEdit::ExtraSelection> extraSelections;
 
 	if ( !isReadOnly() )
 	{
-		QTextEdit::ExtraSelection selection;
+        QTextEdit::ExtraSelection selection;
 
 		QColor lineColor = QColor(Qt::yellow).lighter(160);
 
@@ -265,6 +289,22 @@ void			CodeEditor::lineNumberAreaPaintEvent	( QPaintEvent *event )
 }
 /* ========================================================================= */
 
+/* ------------------------------------------------------------------------- */
+void CodeEditor::showContextMenu (const QPoint &pt)
+{
+    QMenu * menu = createStandardContextMenu ();
+
+    menu->addSeparator ();
+
+    QAction * a_wrap = menu->addAction ("Wrap text");
+    a_wrap->setCheckable (true);
+    a_wrap->setChecked (lineWrapMode () != QPlainTextEdit::NoWrap);
+    connect (a_wrap, SIGNAL(triggered(bool)), this, SLOT(setWrapText(bool)));
+
+    menu->exec (mapToGlobal(pt));
+    delete menu;
+}
+/* ========================================================================= */
 
 /*  CLASS    =============================================================== */
 //

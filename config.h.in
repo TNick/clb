@@ -17,7 +17,7 @@
 //
 /*  INCLUDES    ------------------------------------------------------------ */
 
-#include    <QApplication>
+#include <QApplication>
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,40 +31,48 @@ extern "C" {
 /*  DEFINITIONS    --------------------------------------------------------- */
 
 //! the name of this project
-#define @PROJECT_NAME_U@_PROJECT_NAME   "@PROJECT_NAME@"
+#define @PROJECT_NAME_UPPER@_PROJECT_NAME   "@PROJECT_NAME@"
 
 //! major version (ABI not preserved between these)
-#define @PROJECT_NAME_U@_MAJOR_VERSION      @CLB_MAJOR_VERSION@
+#define @PROJECT_NAME_UPPER@_MAJOR_VERSION      @CLB_MAJOR_VERSION@
 
 //! minor version; ABI is preserved
-#define @PROJECT_NAME_U@_MINOR_VERSION      @CLB_MINOR_VERSION@
+#define @PROJECT_NAME_UPPER@_MINOR_VERSION      @CLB_MINOR_VERSION@
 
 //! bug fixes
-#define @PROJECT_NAME_U@_PATCH_VERSION      @CLB_PATCH_VERSION@
+#define @PROJECT_NAME_UPPER@_PATCH_VERSION      @CLB_PATCH_VERSION@
 
 //! bug fixes
 #define CLB_SETTINGS_VERSION            @CLB_SETTINGS_VERSION@
 
-
-//! the version ans a 32-bit integer
-#define @PROJECT_NAME_U@_VERSION            (\
-    @PROJECT_NAME_U@_MAJOR_VERSION * 0x100000 + \
-    @PROJECT_NAME_U@_MINOR_VERSION * 0x1000 + \
-    @PROJECT_NAME_U@_PATCH_VERSION * 0x1)
+//! the version as a 32-bit integer
+#define @PROJECT_NAME_UPPER@_VERSION            (\
+    @PROJECT_NAME_UPPER@_MAJOR_VERSION * 0x100000 + \
+    @PROJECT_NAME_UPPER@_MINOR_VERSION * 0x1000 + \
+    @PROJECT_NAME_UPPER@_PATCH_VERSION * 0x1)
 
 //! version as a string
-#define @PROJECT_NAME_U@_VERSION_S          "@CLB_VERSION@"
+#define @PROJECT_NAME_UPPER@_VERSION_S          "@CLB_VERSION@"
 
 //! when it was build (UTC)
-#define @PROJECT_NAME_U@_BUILD_TIME         "@CLB_BUILD_TIME@"
+#define @PROJECT_NAME_UPPER@_BUILD_TIME         "@CLB_BUILD_TIME@"
 
-
-//! is this a monolithic build or not
+/**
+ * @def CLB_MONOLITHIC
+ * @brief Is this a monolithic build or not.
+ */
 #cmakedefine CLB_MONOLITHIC
 
+/**
+ * @def CLB_FORCE_DEBUG
+ * @brief Force debug features inside release builds.
+ */
 #cmakedefine CLB_FORCE_DEBUG
 
-//! debug or not
+/**
+ * @def CLB_DEBUG
+ * @brief Debug or not.
+ */
 #ifndef CLB_DEBUG
 #ifdef CLB_FORCE_DEBUG
 #define CLB_DEBUG 1
@@ -73,30 +81,63 @@ extern "C" {
 #endif
 #endif
 
-//! windows or not
+/**
+ * @def TARGET_SYSTEM_WIN32
+ * @brief Windows or not.
+ */
+#ifndef TARGET_SYSTEM_WIN32
 #cmakedefine TARGET_SYSTEM_WIN32
+#endif
 
-//! microsoft compiler or not
+/**
+ * @def TARGET_COMPILER_MSVC
+ * @brief Microsoft compiler or not.
+ */
+#ifndef TARGET_COMPILER_MSVC
 #cmakedefine TARGET_COMPILER_MSVC
+#endif
 
 #ifdef TARGET_COMPILER_MSVC
 #   define int64_t __int64
 #   define uint64_t unsigned __int64
 #endif
 
-//! 32 bit architecture
+/**
+ * @def TARGET_32BITS
+ * @brief 32 bit architecture or not.
+ */
+#ifndef TARGET_32BITS
 #cmakedefine TARGET_32BITS
+#endif
 
-//! 64 bit architecture
+/**
+ * @def TARGET_32BITS
+ * @brief 64 bit architecture or not.
+ */
+#ifndef TARGET_64BITS
 #cmakedefine TARGET_64BITS
+#endif
 
-//! system name
+/**
+ * @def TARGET_SYSTEM
+ * @brief Name of the target system.
+ */
+#ifndef TARGET_SYSTEM
 #define TARGET_SYSTEM "@CMAKE_SYSTEM_NAME@"
+#endif
 
-//! compiler name
+/**
+ * @def TARGET_COMPILER
+ * @brief Name of the compiler.
+ */
+#ifndef TARGET_COMPILER
 #define TARGET_COMPILER "@CMAKE_CXX_COMPILER_ID@"
+#endif
 
-// number of bits
+/**
+ * @def TARGET_BITS
+ * @brief Number of bits (must be either 32 or 64).
+ */
 #ifdef TARGET_32BITS
 #   ifdef TARGET_64BITS
 #       error "Can't be both 32 and 64. Make up your mind"
@@ -108,9 +149,18 @@ extern "C" {
 #   error "Undefined architecture; define either TARGET_32BITS or TARGET_64BITS"
 #endif
 
-
-// Take the export or inport form depending on who's asking;
-// in monolithic builds only a selected set of functions needs to be exported
+/**
+ * @def CLB_MON_EXPORT
+ * @brief Take the export or inport form depending on who's asking.
+ *
+ * In monolithic builds only a selected set of functions needs to be exported
+ */
+/**
+ * @def CLB_EXPORT
+ * @brief Take the export or inport form depending on who's asking.
+ *
+ * In monolithic builds only a selected set of functions needs to be exported
+ */
 #ifdef CLB_MONOLITHIC
 #   if defined(CLB_SHARED)
 #       define CLB_MON_EXPORT        Q_DECL_EXPORT

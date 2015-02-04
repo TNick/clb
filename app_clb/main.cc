@@ -107,7 +107,7 @@ int   actual_main(int argc, char *argv[])
     int ret_val = 0;
 
     /* prepare to start */
-    QApplication apl(argc, argv);
+    QApplication apl (argc, argv);
 
     /* prepare the ground for easy access to settings */
     QCoreApplication::setOrganizationName("clb");

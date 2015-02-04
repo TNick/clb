@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>../resources/text.png</file>
         <file>../resources/folder.png</file>
+        <file>../resources/branch-end.png</file>
+        <file>../resources/branch-more.png</file>
+        <file>../resources/branch-open.png</file>
+        <file>../resources/branch-closed.png</file>
+        <file>../resources/vline.png</file>
     </qresource>
 </RCC>
