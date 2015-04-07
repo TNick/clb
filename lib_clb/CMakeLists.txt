@@ -40,8 +40,10 @@ set( LAPCLB_LIBS
     "support"
 )
 
-set( CLBGUI_QT_MODS
+set( LAPCLB_QT_MODS
     Core
+    Xml
+    Network
 )
 
 # ============================================================================

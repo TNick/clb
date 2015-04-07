@@ -36,6 +36,8 @@ set( CLBGUI_LIBS
 set( CLBGUI_QT_MODS
     Core
     Widgets
+    Xml
+    Network
 )
 
 # ============================================================================

@@ -145,6 +145,10 @@ public:
     bool
     wrapText ();
 
+    void
+    setPlaceholderText (
+        const QString & s);
+
 public slots:
 
     void
