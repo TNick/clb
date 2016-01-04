@@ -171,6 +171,17 @@ bool CodeEditor::wrapText ()
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
+void CodeEditor::setPlaceholderText(const QString & s)
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
+    QPlainTextEdit::setPlaceholderText (s);
+#else
+    Q_UNUSED(s);
+#endif
+}
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
 void			CodeEditor::resizeEvent					( QResizeEvent *e )
 {
     QPlainTextEdit::resizeEvent(e);
