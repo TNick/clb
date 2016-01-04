@@ -13,11 +13,13 @@ pileTarget( "logic")
 set( LOGIC_SOURCES
     snipitem.cc
     snipmodel.cc
+    snipdyn.cc
 )
 
 set( LOGIC_HEADERS
     snipitem.h
     snipmodel.h
+    snipdyn.h
 )
 
 set( LOGIC_LIBS

@@ -59,6 +59,7 @@ SnippetsDlg::SnippetsDlg(QWidget *parent) :
     p.setColor(QPalette::Inactive, QPalette::Highlight, qRgb (255, 85, 0));
     p.setColor(QPalette::Inactive, QPalette::HighlightedText, qRgb(255, 255, 127));
     ui->tv_content->setPalette(p);
+    ui->tv_vars->hide();
 
     QSettings stg;
 
